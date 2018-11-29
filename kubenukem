@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+if [[ -z $1 ]]; then
+  echo "ERROR: no service provided in default namespace"
+  exit 1
+fi
+
+namespace=$1
+service=$2
+
+if [[ -z $service ]]; then
+  service=$1
+  namespace=default
+fi
+
+
+things=(deployment replicaset statefulset daemonset service job hpa pod role rolebinding clusterrole clusterrolebinding serviceaccount)
+for thing in "${things[@]}"; do
+	for thingy in "$(kubectl -n "$namespace" get "$thing" | grep "$service")"; do
+		for t in $(echo "$thingy"| cut -d' ' -f1); do
+			kubectl -n "$namespace" delete "$thing" "$t" --now --force --cascade=false
+		done
+	done
+done
