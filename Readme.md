@@ -47,3 +47,5 @@ Delete all resources with name `*tiller*` in `kube-system` namespace:
 ```bash
 kubenukem kube-system tiller
 ```
+
+bump
